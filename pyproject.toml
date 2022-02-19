@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "flight_demo"
+version = "0.1.0"
+description = "Tracking and vizualizing flight data"
+authors = ["cltj <tj@cloudlink.ai>", "tormodder <tofadle@protonmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+uvicorn = "^0.17.5"
+starlette = "0.17.1"
+fastapi = "^0.74.0"
+pydantic = "^1.9.0"
+azure-data-tables = "^12.2.0"
+requests = "^2.27.1"
+pandas = "^1.4.1"
+
+[tool.poetry.dev-dependencies]
+uvicorn = "^0.17.5"
+starlette = "0.17.1"
+fastapi = "^0.74.0"
+requests = "^2.27.1"
+pydantic = "^1.9.0"
+pandas = "^1.4.1"
+azure-data-tables = "^12.2.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
