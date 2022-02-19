@@ -2,7 +2,7 @@ from logging import exception
 from xmlrpc.client import DateTime
 import pandas as pd
 import requests
-import pydantic
+#import pydantic
 import datetime
 import time
 import json
@@ -20,15 +20,19 @@ def get_flight_data(icao24):
 
     response = requests.request("GET", url, headers=headers, data=payload)
 
-    if response.status_code == 200:
-        return response.content
+    status_code = response.status_code
+    if status_code == 200:
+        json_data = response.json()
+        x = json_data['states']
+        return json_data
     else:
         return response.status_code
 
 def main():
-    icao24="a59601"
-    x = get_flight_data(icao24)
-    print(x)
+    icao24="4952c1"
+    flight_data = get_flight_data(icao24)
+    print(flight_data['time'])
+    print(flight_data['states'])
 
 if __name__ == "__main__":
     main()
