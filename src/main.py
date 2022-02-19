@@ -13,11 +13,9 @@ def get_flight_data(icao24):
     unix_timestamp = int(time.mktime(presentDate.timetuple()))
 
     url = "https://opensky-network.org/api/states/all?time="+str(unix_timestamp)+ "&icao24=" + icao24
-
     payload={}
     headers = {
     }
-
     response = requests.request("GET", url, headers=headers, data=payload)
 
     status_code = response.status_code
@@ -25,8 +23,12 @@ def get_flight_data(icao24):
         json_data = response.json()
         x = json_data['states']
         return json_data
+        if x == None:
+            return 400
+        else:
+            return json_data
     else:
-        return response.status_code
+        return status_code
 
 def main():
     icao24="4952c1"
