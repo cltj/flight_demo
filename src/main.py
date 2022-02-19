@@ -1,38 +1,26 @@
-#import pandas as pd
-import requests
-# import pydantic
-import datetime
+from flight_data import get_flight_data
+from az_table import entity_crud
+from schemas import Flight_Entry
+import schedule
 import time
-# import json
 
+# # # # # # # # # # # # # #
+# Config
+# # # # # # # # # # # # # #
 
-def get_flight_data(icao24):
-    presentDate = datetime.datetime.now()
-    unix_timestamp = int(time.mktime(presentDate.timetuple()))
+connection_string = "<INSERT_CONNECTION_STRING>"
+icao24="4b1807"
 
-    url = "https://opensky-network.org/api/states/all?time="+str(unix_timestamp)+ "&icao24=" + icao24
-    payload={}
-    headers = {
-    }
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    status_code = response.status_code
-    if status_code == 200:
-        json_data = response.json()
-        x = json_data['states']
-        return json_data
-        if x == None:
-            return 400
-        else:
-            return json_data
-    else:
-        return status_code
 
 def main():
-    icao24="4952c1"
-    flight_data = get_flight_data(icao24)
-    print(flight_data['time'])
-    print(flight_data['states'])
+    data = get_flight_data(icao24)
+    # Kompliser ting med pydantic her
+    flight_data = Flight_Entry(data) # Trenger retting
+    entity_crud(connection_string, table_name="<INSERT_TABLE_NAME>", operation='create', entity=flight_data)
+
 
 if __name__ == "__main__":
-    main()
+    schedule.every(9).seconds.do(main())
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
