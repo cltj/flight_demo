@@ -1,11 +1,9 @@
-from logging import exception
-from xmlrpc.client import DateTime
 import pandas as pd
 import requests
-#import pydantic
+# import pydantic
 import datetime
 import time
-import json
+# import json
 
 
 def get_flight_data(icao24):
