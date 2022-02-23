@@ -1,4 +1,4 @@
-from urllib import request
+#from urllib import request
 import requests
 import datetime
 import time
@@ -15,7 +15,7 @@ def get_flight_data(icao24):
     response = requests.request("GET", url, headers=headers, data=payload)
 
     status_code = response.status_code
-    resp = request.request("GET", 'https://http.cat/'+ status_code)
+    resp = requests.request("GET", 'https://http.cat/' + str(status_code))
     if status_code == 200:
         json_data = response.json()
         x = json_data['states']
