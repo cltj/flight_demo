@@ -4,7 +4,7 @@ import datetime
 import time
 
 
-def get_flight_data(icao24):
+def single_flight_data(icao24):
     presentDate = datetime.datetime.now()
     unix_timestamp = int(time.mktime(presentDate.timetuple()))-int(10) # 10 sekunder forsinkelse
 
