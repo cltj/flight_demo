@@ -20,17 +20,20 @@ def single_flight_data(icao24):
         x = json_data['states']
         if x == None:
             resp = requests.request("GET", 'https://http.cat/400')
-            return resp
+            data = none_flight_values(icao24, unix_timestamp)
+            msg = "not found"
+            return data, msg, resp
         else:
             data = extract_flight_values(json_data)
-            return data
+            msg = "OK"
+            return data, msg, resp
     else:
         return resp
 
 
 def extract_flight_values(flight_data):
     flight_data_dict = {}
-    flight_data_dict['PartitionKey'] = str(flight_data['states'][0][1])             # Needed for az-tables
+    flight_data_dict['PartitionKey'] = str(flight_data['states'][0][0])             # Needed for az-tables
     flight_data_dict['RowKey'] = flight_data['time']                                # Needed for az-tables
     flight_data_dict['time'] = flight_data['time']
     flight_data_dict['icao24'] = str(flight_data['states'][0][0])
@@ -50,4 +53,13 @@ def extract_flight_values(flight_data):
     flight_data_dict['squawk'] = str(flight_data['states'][0][14])
     flight_data_dict['spi'] = bool(flight_data['states'][0][15])
     flight_data_dict['position_source'] = int(flight_data['states'][0][16])
+    return flight_data_dict
+
+
+def none_flight_values(icao24, unix_timestamp):
+    flight_data_dict = {}
+    flight_data_dict['PartitionKey'] = str(icao24)             # Needed for az-tables
+    flight_data_dict['RowKey'] = unix_timestamp                # Needed for az-tables
+    flight_data_dict['longitude'] = float(0.0)
+    flight_data_dict['latitude'] = float(0.0)
     return flight_data_dict

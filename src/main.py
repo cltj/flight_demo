@@ -1,6 +1,6 @@
 from flight_data import single_flight_data
 from az_table import entity_crud
-from schemas import Flight_Entry
+from schemas import Flight_Entry, Not_Found_Entry
 import schedule
 import time
 import os
@@ -17,13 +17,18 @@ icao24 = os.getenv("ICAO24")
 
 def main():
     data = single_flight_data(icao24)
-    flight_data = [Flight_Entry(**data)]
-    #print(flight_data[0].icao24) # En test print
-    entity_crud(connection_string, table_name=azure_table_name, operation='create', entity=flight_data[0])
+    if data[1] != "OK":
+        print(data[1])
+        flight_data = [Not_Found_Entry(**data[0])]
+        entity_crud(connection_string, table_name=azure_table_name, operation='create', entity=flight_data[0])
+    else:
+        flight_data = [Flight_Entry(**data[0])]
+        #print(flight_data[0].icao24) # En test print
+        entity_crud(connection_string, table_name=azure_table_name, operation='create', entity=flight_data[0])
 
 
 if __name__ == "__main__":
-    schedule.every(9).seconds.do(main()) #no kødd her, ellers bra
+    schedule.every(60).seconds.do(main)
     while True:
         schedule.run_pending()
         time.sleep(1)
