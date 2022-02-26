@@ -23,7 +23,7 @@ def main():
         entity_crud(connection_string, table_name=azure_table_name, operation='create', entity=flight_data[0])
     else:
         flight_data = [Flight_Entry(**data[0])]
-        #print(flight_data[0].icao24) # En test print
+        print("Lat/Long: "+str(flight_data[0].latitude)+","+str(flight_data[0].longitude)) # En test print
         entity_crud(connection_string, table_name=azure_table_name, operation='create', entity=flight_data[0])
 
 
