@@ -37,3 +37,15 @@ def list_entities(connection_string, tableName, select):
             return entities
         except HttpResponseError as e:
                 print(e.message)
+
+def query_entities_values(connection_string, table_name, filter, select): # , parameters
+    lst = []
+    with TableClient.from_connection_string(connection_string, table_name) as table_client:
+        try:
+            entities = table_client.query_entities(filter, select=[select])
+            for entity in entities:
+                lst.append(entity)
+            print(len(lst))
+            return lst
+        except HttpResponseError as e:
+            print(e.message)
