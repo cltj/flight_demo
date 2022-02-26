@@ -23,4 +23,11 @@ class Flight_Entry(BaseModel):
     spi : Optional[bool or None]
     position_source : Optional[int or None]
 
+class Not_Found_Entry(BaseModel):
+    PartitionKey : str
+    RowKey : str
+    longitude : float or None
+    latitude : float or None
+
+
 # print(Flight_Entry.schema_json(indent=4))
