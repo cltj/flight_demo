@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import geopandas as gpd
 import matplotlib.pyplot as plt
 import os
 from dotenv import load_dotenv
@@ -46,13 +47,24 @@ def vector(first_entity,last_entity):
 def transform_data(data):
     #df = pd.DataFrame(data, columns=["PartitionKey", "time", "longitude", "latitude", "on_ground", "geo_altitude"])
     df = pd.DataFrame(data, columns=["longitude", "latitude"])
+    print(df.head())
     df = df.drop_duplicates(subset=["longitude", "latitude"], keep='last')
     return df
 
 
 def plot(df):
     BBox = (df.longitude.min(), df.longitude.max(), df.latitude.min(), df.latitude.max())
-    # Plot the data
+    # initialize an axis
+    fig, ax = plt.subplots(figsize=(8,6))
+    # plot map on axis
+    countries = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
+    countries[countries["name"] == "Sweden"].plot(color="lightgrey", ax=ax)
+    # plot points
+    df.plot(x="longitude", y="latitude", kind="scatter", c="brightness", colormap="YlOrRd", title=f"Flight", ax=ax)
+    # add grid
+    ax.grid(b=True, alpha=0.5)
+    plt.show()
+
 
 
 def main():
@@ -63,10 +75,7 @@ def main():
     vector(first_entity,last_entity)
 
     df = transform_data(sorted_data)
-    print(df)
-    with Image.open("C:\\Users\\thki01\\Downloads\\this-map.png") as im:
-        im.rotate(45).show()
-    #plot(df)
+    plot(df)
 
 
 if __name__ == "__main__":
