@@ -1,13 +1,9 @@
-import numpy as np
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
-import matplotlib.image as pli
 import os
 from dotenv import load_dotenv
 from az_table import query_entities_values
-from PIL import Image
-
 
 # # # # # # #
 # Config    #
@@ -38,22 +34,14 @@ def clean_and_sort(data):
     return sorted_data
 
 
-def vector(first_entity,last_entity):
-    flight_time = last_entity[0]['time']-first_entity[0]['time']
-    horizontal_travel = first_entity[0]['latitude']-last_entity[0]['latitude']
-    vertical_travel = first_entity[0]['longitude']-last_entity[0]['longitude']
-    print(" flight time: {} \n lat: {} \n long: {}".format(flight_time,horizontal_travel,vertical_travel))
-
-
 def transform_data(data):
-    #df = pd.DataFrame(data, columns=["PartitionKey", "time", "longitude", "latitude", "on_ground", "geo_altitude"])
     df = pd.DataFrame(data, columns=["longitude", "latitude"])
     print(df.head())
     df = df.drop_duplicates(subset=["longitude", "latitude"], keep='last')
     return df
 
 
-def plot(df):
+def plot(df, icao24):
     # initialize an axis
     fig, ax = plt.subplots(figsize=(8,6))
     # plot map on axis
@@ -66,24 +54,20 @@ def plot(df):
         kind="scatter",
         c="blue",
         colormap="YlOrRd",
-        title=f"Flight",
+        title=f"Flight "+ str(icao24), #dette nummeret trengs å byttes ut med egen id når vi får det
         ax=ax
         ).get_figure()
     # add grid
     ax.grid(b=True, alpha=0.5)
-    fig.savefig('test.png')
-
+    file_name = "src/img/flight-"+str(icao24)+".png"
+    fig.savefig(file_name) #dette nummeret trengs å byttes ut med egen id når vi får det
 
 
 def main():
     data = get_stored_flight_data(icao24=icao24)
     sorted_data = clean_and_sort(data)
-    first_entity = sorted_data[:1:1]
-    last_entity = sorted_data[len(sorted_data)-1::1]
-    vector(first_entity,last_entity)
-
     df = transform_data(sorted_data)
-    plot(df)
+    plot(df,icao24)
 
 
 if __name__ == "__main__":
