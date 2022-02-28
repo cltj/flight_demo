@@ -43,24 +43,24 @@ def transform_data(data):
 
 def plot(df, icao24):
     # initialize an axis
-    fig, ax = plt.subplots(figsize=(8,6))
+    fig, ax = plt.subplots(figsize=(8,8))
     # plot map on axis
     countries = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
-    countries[countries["name"] == "Sweden"].plot(color="lightgrey", ax=ax)
+    countries[countries["name"] == "Sweden"].plot(color="darkgrey", ax=ax)
     # plot points
     fig = df.plot(
         x="longitude",
         y="latitude",
-        kind="scatter",
+        kind="line",
         c="blue",
-        colormap="YlOrRd",
+        #colormap="YlOrRd", jeg tror ikke denne linjen gjør noe akkurat nå
         title=f"Flight "+ str(icao24), #dette nummeret trengs å byttes ut med egen id når vi får det
         ax=ax
         ).get_figure()
     # add grid
     ax.grid(b=True, alpha=0.5)
-    file_name = "src/img/flight-"+str(icao24)+".png"
-    fig.savefig(file_name) #dette nummeret trengs å byttes ut med egen id når vi får det
+    file_name = "./img/"+str(icao24)+".png"#si ifra hvis dette ikke fungerer på windows
+    fig.savefig(file_name)#dette nummeret trengs å byttes ut med egen id når vi får det
 
 
 def main():
