@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
+import matplotlib.image as pli
 import os
 from dotenv import load_dotenv
 from az_table import query_entities_values
@@ -53,17 +54,24 @@ def transform_data(data):
 
 
 def plot(df):
-    BBox = (df.longitude.min(), df.longitude.max(), df.latitude.min(), df.latitude.max())
     # initialize an axis
     fig, ax = plt.subplots(figsize=(8,6))
     # plot map on axis
     countries = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
     countries[countries["name"] == "Sweden"].plot(color="lightgrey", ax=ax)
     # plot points
-    df.plot(x="longitude", y="latitude", kind="scatter", c="brightness", colormap="YlOrRd", title=f"Flight", ax=ax)
+    fig = df.plot(
+        x="longitude",
+        y="latitude",
+        kind="scatter",
+        c="blue",
+        colormap="YlOrRd",
+        title=f"Flight",
+        ax=ax
+        ).get_figure()
     # add grid
     ax.grid(b=True, alpha=0.5)
-    plt.show()
+    fig.savefig('test.png')
 
 
 
