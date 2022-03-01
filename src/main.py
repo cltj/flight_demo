@@ -1,4 +1,4 @@
-from flight_data import single_flight_data
+from flight_data import single_flight_data, now_in_unix_time
 from az_table import entity_crud
 from schemas import Flight_Entry, Not_Found_Entry
 import schedule
@@ -16,7 +16,8 @@ icao24 = os.getenv("ICAO24")
 
 
 def main():
-    data = single_flight_data(icao24)
+    unix_timestamp = now_in_unix_time()
+    data = single_flight_data(icao24, unix_timestamp)
     if data[1] != "OK":
         print(data[1])
         flight_data = [Not_Found_Entry(**data[0])]
