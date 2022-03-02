@@ -5,6 +5,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 import os
 from dotenv import load_dotenv
 from az_table import query_entities_values
+#from flight_data import human_readable_unix_time
 import seaborn as sns
 
 # # # # # # #
@@ -45,6 +46,10 @@ def transform_data(data):
     #altitude_df = altitude_df.drop_duplicates(subset=["geo_altitude", "time"], keep='last')
     return df
 
+def human_readable_unix_time(timestamp):
+    human_format_date = datetime.datetime.fromtimestamp(timestamp).strftime("%d/%m/%Y, %H:%M")
+    return human_format_date
+
 
 def plot(df, icao24):
     #TODO: Få vekk tallet i høyre hjørne, se på muligheten til å gi aksene ulik størrelse
@@ -56,9 +61,11 @@ def plot(df, icao24):
     #add grid
     axs[0].grid(b=True, alpha=0.5, c="black")
     #plot the data on the axes
-    sns.scatterplot(data=df, x="longitude", y="latitude", ax=axs[0])
-    sns.lineplot(data=df, x="time", y="geo_altitude", ax=axs[1])
+    longitude_latitude = sns.scatterplot(data=df, x="longitude", y="latitude", ax=axs[0])
+    time_altitude = sns.lineplot(data=df, x="time", y="geo_altitude", ax=axs[1])
     fig.tight_layout()
+    #convert unix timestamp in ax[1]
+    #axs[1].set(xlabel=str(human_readable_unix_time()))
     #save file
     file_name = "./img/"+str(icao24)
     fig.savefig(file_name)#dette nummeret trengs å byttes ut med egen id når vi får det
