@@ -50,14 +50,15 @@ def plot(df, icao24):
     #TODO: Få vekk tallet i høyre hjørne, se på muligheten til å gi aksene ulik størrelse
     # initialize one figure with two axes
     fig, axs = plt.subplots(1, 2, figsize=(8,8), gridspec_kw=dict(width_ratios=[4, 3]))
+    #plot the shape of sweden on the left axis    
+    countries = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
+    countries[countries["name"] == "Sweden"].plot(color="darkgrey", ax=axs[0])
+    #add grid
+    axs[0].grid(b=True, alpha=0.5, c="black")
+    #plot the data on the axes
     sns.scatterplot(data=df, x="longitude", y="latitude", ax=axs[0])
     sns.lineplot(data=df, x="time", y="geo_altitude", ax=axs[1])
     fig.tight_layout()
-    #TODO: få tilbake sverige figur og grid på venstre akse
-    #ountries = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
-    #countries[countries["name"] == "Sweden"].plot(color="darkgrey", ax=axs[0])
-    #add grid
-    #axs[0].grid(b=True, alpha=0.5)
     #save file
     file_name = "./img/"+str(icao24)
     fig.savefig(file_name)#dette nummeret trengs å byttes ut med egen id når vi får det
