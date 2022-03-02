@@ -5,6 +5,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 import os
 from dotenv import load_dotenv
 from az_table import query_entities_values
+import seaborn as sns
 
 # # # # # # #
 # Config    #
@@ -36,58 +37,37 @@ def clean_and_sort(data):
 
 
 def transform_data(data):
-    df = pd.DataFrame(data, columns=["longitude", "latitude"])
-    altitude_df = pd.DataFrame(data, columns=["geo_altitude", "time"])
+    df = pd.DataFrame(data, columns=["longitude", "latitude", "geo_altitude", "time"])
+    #altitude_df = pd.DataFrame(data, columns=["geo_altitude", "time"])
     print(df.head())
-    print(altitude_df.head())
-    df = df.drop_duplicates(subset=["longitude", "latitude"], keep='last')
-    altitude_df = altitude_df.drop_duplicates(subset=["geo_altitude", "time"], keep='last')
-    return df, altitude_df
+    #print(altitude_df.head())
+    df = df.drop_duplicates(subset=["longitude", "latitude", "geo_altitude", "time"], keep='last')
+    #altitude_df = altitude_df.drop_duplicates(subset=["geo_altitude", "time"], keep='last')
+    return df
 
-#TODO: Legg til et subplot(?) med altitude
-def plot(df, altitude_df, icao24):
-    # initialize an axis
-    fig, ax = plt.subplots(figsize=(8,8))
-    fig2, ax2 = plt.subplots(figsize=(8,8))
-    # plot map on axis
-    countries = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
-    countries[countries["name"] == "Sweden"].plot(color="darkgrey", ax=ax)
-    # plot points
-    fig = df.plot(
-        x="longitude",
-        y="latitude",
-        kind="scatter",
-        c="blue",
-        colormap="YlOrRd",
-        title="Flight "+ str(icao24), #dette nummeret trengs å byttes ut med egen id når vi får det
-        ax=ax
-        ).get_figure()
-    #plot second figure
-    fig2 = altitude_df.plot(
-        x="time",
-        y="geo_altitude",
-        c="blue",
-        ax=ax2,
-    ).get_figure()
-    # add grid
-    ax.grid(b=True, alpha=0.5)
-    file_name = "./img/"+str(icao24)#si ifra hvis dette ikke fungerer på windows
-    save_two_figs(file_name)#dette nummeret trengs å byttes ut med egen id når vi får det
 
-def save_two_figs(filename):
-    #hadde vært fint å fått som .png med begge, heller en pdf med to sider
-    pdf = PdfPages(filename)
-    fig_nums = plt.get_fignums()
-    figs = [plt.figure(n) for n in fig_nums]
-    for fig in figs:
-        fig.savefig(pdf, format='pdf')
-    pdf.close()
+def plot(df, icao24):
+    #TODO: Få vekk tallet i høyre hjørne, se på muligheten til å gi aksene ulik størrelse
+    # initialize one figure with two axes
+    fig, axs = plt.subplots(1, 2, figsize=(8,8), gridspec_kw=dict(width_ratios=[4, 3]))
+    sns.scatterplot(data=df, x="longitude", y="latitude", ax=axs[0])
+    sns.lineplot(data=df, x="time", y="geo_altitude", ax=axs[1])
+    fig.tight_layout()
+    #TODO: få tilbake sverige figur og grid på venstre akse
+    #ountries = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
+    #countries[countries["name"] == "Sweden"].plot(color="darkgrey", ax=axs[0])
+    #add grid
+    #axs[0].grid(b=True, alpha=0.5)
+    #save file
+    file_name = "./img/"+str(icao24)
+    fig.savefig(file_name)#dette nummeret trengs å byttes ut med egen id når vi får det
+
 
 def main():
     data = get_stored_flight_data(icao24=icao24)
     sorted_data = clean_and_sort(data)
-    df, altitude_df = transform_data(sorted_data)
-    plot(df, altitude_df, icao24)
+    df = transform_data(sorted_data)
+    plot(df, icao24)
 
 
 if __name__ == "__main__":
