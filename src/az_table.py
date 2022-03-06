@@ -30,8 +30,8 @@ def entity_crud(connection_string, table_name, operation, entity):
                 print("Entity does not exists")
 
 
-def list_entities(connection_string, tableName, select):
-    with TableClient.from_connection_string(connection_string, table_name=tableName) as table_client:
+def list_entities(connection_string, table_name, select):
+    with TableClient.from_connection_string(connection_string, table_name=table_name) as table_client:
         try:
             entities = list(table_client.list_entities(select=select))
             return entities

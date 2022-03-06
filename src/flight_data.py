@@ -1,7 +1,6 @@
 import requests
 import datetime
 import time
-from flight_status import flight_status
 
 
 def now_in_unix_time():
@@ -18,21 +17,39 @@ def single_flight_data(icao24, unix_timestamp):
     response = requests.request("GET", url, headers=headers, data=payload)
 
     status_code = response.status_code
-    resp = requests.request("GET", 'https://http.cat/'+ str(status_code))
     if status_code == 200:
         json_data = response.json()
         x = json_data['states']
         if x == None:
-            resp = requests.request("GET", 'https://http.cat/400')
             data = none_flight_values(icao24, unix_timestamp)
             msg = "not found"
-            return data, msg, resp
+            return data, msg
         else:
             data = extract_flight_values(json_data)
             msg = "OK"
-            return data, msg, resp
+            return data, msg
     else:
-        return resp
+        print("Error with single flight data: " + str(status_code))
+
+
+def get_on_ground(icao24, unix_timestamp):
+    url = "https://opensky-network.org/api/states/all?time="+ str(unix_timestamp) + "&icao24=" + icao24
+    payload={}
+    headers = {
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    status_code = response.status_code
+    if status_code == 200:
+        json_data = response.json()
+        x = json_data['states']
+        if x != None:
+            on_ground_data = {}
+            on_ground_data['icao24'] = str(x[0][0])
+            on_ground_data['on_ground'] = str(x[0][8])
+            return on_ground_data
+    else:
+        print("Error with single flight data: " + str(status_code))
 
 
 def extract_flight_values(flight_data): # legg til id her
@@ -49,7 +66,7 @@ def extract_flight_values(flight_data): # legg til id her
     flight_data_dict['true_track'] = float(flight_data['states'][0][10])
     flight_data_dict['vertical_rate'] = flight_data['states'][0][11]
     flight_data_dict['geo_altitude'] = flight_data['states'][0][13]
-    flight_data_dict['status'] = flight_status(str(flight_data['states'][0][0])) # Sjekker og setter inn status
+    flight_data_dict['status'] = "MÅ SETTES INN" # Sjekker og setter inn status
     return flight_data_dict
 
 

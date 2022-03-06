@@ -1,35 +1,51 @@
-import os
-from dotenv import load_dotenv
-from flight_data import single_flight_data, now_in_unix_time
+from flight_data import get_on_ground, now_in_unix_time
+from az_queue import new_departure, new_arrival
 
-load_dotenv()
-icao24 = os.getenv("ICAO24")
-
+enroute_list = []
 
 def flight_status(icao24):
-    unix_timestamp = now_in_unix_time()
-    # unix_timestamp = 1645865642 # for test
-    data_1 = single_flight_data(icao24, unix_timestamp)
-    data_2 = single_flight_data(icao24, unix_timestamp- int(300)) # Sjekker for 5 min siden
-    if data_1[1] and data_2[1] == "OK":
-        on_ground_1 = bool(data_1[0]['on_ground'])
-        on_ground_2 = bool(data_2[0]['on_ground'])
-        if on_ground_1 == True:
-            if on_ground_2 == False:
-                flight_status = "arrived" #kanskje lage egen ID tabell for flight status ???
-                return flight_status
-        if on_ground_1 ==  False:
-            if on_ground_2 == False:
-                flight_status = "enroute"
-                return flight_status
-        if on_ground_2 == True:
-            if on_ground_1 == False:
-                flight_status = "departed"
-                return flight_status
+    enroute = True if icao24 in enroute_list else False
+    if enroute == True:
+        has_arrived = check(icao24)
+        if has_arrived == True:
+            enroute_list.remove(icao24)
+        else:
+            pass
+    else:
+        has_departed = check(icao24)
+        if has_departed == True:
+            enroute_list.append(icao24)
+        else:
+            pass
 
-#test1 = flight_status(icao24) # Arrived -time: 1645854809 + icao24: 4aca63
-#print(test1)
-#test2 = flight_status(icao24) # Enroute -time: 1645854627 + icao24: 4aca63
-#print(test2)
-test3 = flight_status(icao24) # Departed -time: 1645865642 + icao24: 4aca63
-print(test3)
+
+def check(icao24):
+    unix_timestamp = now_in_unix_time()
+    data_1 = get_on_ground(icao24, unix_timestamp)
+    data_2 = get_on_ground(icao24, unix_timestamp- int(300)) # Sjekker for 5 min siden
+    if data_1 and data_2 is not None:
+        d1_ground = data_1['on_ground']
+        d2_ground = data_2['on_ground']
+        if d1_ground == d2_ground:
+            pass
+        elif d1_ground == 'True':
+            if d2_ground == 'False':
+                msg = str(icao24 + ": Plane has arrived in the last 5 minutes")
+                print(msg)
+                new_arrival(icao24)
+                return True
+        elif d2_ground ==  'True':
+            if d1_ground == 'False':
+                msg = str(icao24 + ": Plane has departed in the last 5 minues")
+                print(msg)
+                new_departure(icao24)
+                return True
+        else:
+            print("Error in flight status")
+    else:
+        msg = str(icao24 + ": None value found, skipping...")
+        print(msg)
+
+
+def trip_tracker(enroute_list):
+    return enroute_list
