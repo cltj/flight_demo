@@ -1,21 +1,24 @@
 from flight_data import single_flight_data, now_in_unix_time
-from az_table import entity_crud
+from list_flights import list_flights
+from flight_status import flight_status
+from config import My_Config
+from az_table import list_entities
 from schemas import Flight_Entry, Not_Found_Entry
 import schedule
 import time
-import os
-from dotenv import load_dotenv
 
-# # # # # # # # # # # # # #
-# Config
-# # # # # # # # # # # # # #
-load_dotenv()
-connection_string = os.getenv("AZURE_TABLE_CONNECTION_STRING")
-azure_table_name = os.getenv("AZURE_TABLE_NAME")
-icao24 = os.getenv("ICAO24")
+
+def check_status(airport_id, tag):
+    flights = list_flights(airport_id, tag)
+    for icao24 in flights:
+        flight_status(icao24)
 
 
 def main():
+    airports = list_entities(connection_string=My_Config.conn_str(), table_name="airports", select="*")
+    for airport in airports:
+        check_status(airport_id=airport['PartitionKey'],tag=airport['RowKey'])
+    """
     unix_timestamp = now_in_unix_time()
     data = single_flight_data(icao24, unix_timestamp)
     if data[1] != "OK":
@@ -26,7 +29,7 @@ def main():
         flight_data = [Flight_Entry(**data[0])]
         print("Lat/Long: "+str(flight_data[0].latitude)+","+str(flight_data[0].longitude)) # En test print
         entity_crud(connection_string, table_name=azure_table_name, operation='create', entity=flight_data[0])
-
+"""
 
 if __name__ == "__main__":
     schedule.every(60).seconds.do(main)
