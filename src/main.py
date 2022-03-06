@@ -10,14 +10,17 @@ import time
 
 def check_status(airport_id, tag):
     flights = list_flights(airport_id, tag)
-    for icao24 in flights:
-        flight_status(icao24)
+    for flight in flights:
+        print(str(len(flights)) + " fligths in list")
+        flights.pop(0)
+        flight_status(flight)
 
 
 def main():
     airports = list_entities(connection_string=My_Config.conn_str(), table_name="airports", select="*")
     for airport in airports:
         check_status(airport_id=airport['PartitionKey'],tag=airport['RowKey'])
+    print("Done!!!")
     """
     unix_timestamp = now_in_unix_time()
     data = single_flight_data(icao24, unix_timestamp)

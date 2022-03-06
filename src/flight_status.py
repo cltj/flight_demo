@@ -1,5 +1,5 @@
 from flight_data import get_on_ground, now_in_unix_time
-from az_queue import new_departure, new_arrival
+#from az_queue import new_departure, new_arrival
 
 enroute_list = []
 
@@ -27,18 +27,22 @@ def check(icao24):
         d1_ground = data_1['on_ground']
         d2_ground = data_2['on_ground']
         if d1_ground == d2_ground:
+            msg = str(icao24 + ": Equal values, skipping...")
+            print(msg)
             pass
         elif d1_ground == 'True':
             if d2_ground == 'False':
                 msg = str(icao24 + ": Plane has arrived in the last 5 minutes")
                 print(msg)
-                new_arrival(icao24)
+                enroute_list.remove(icao24)
+                #new_arrival(icao24)
                 return True
         elif d2_ground ==  'True':
             if d1_ground == 'False':
                 msg = str(icao24 + ": Plane has departed in the last 5 minues")
                 print(msg)
-                new_departure(icao24)
+                enroute_list.append(icao24)
+                #new_departure(icao24)
                 return True
         else:
             print("Error in flight status")
@@ -47,5 +51,5 @@ def check(icao24):
         print(msg)
 
 
-def trip_tracker(enroute_list):
+def trip_tracker():
     return enroute_list
