@@ -1,21 +1,18 @@
 from config import My_Config
 from azure.storage.queue import QueueClient
-from flight_data import now_in_unix_time
 
 conn_str = My_Config.conn_str()
-q_name = "flightsqueue"
 
 
 def new_departure(icao24):
-    now = now_in_unix_time()
+    q_name = "flightdeparture"
     queue_client = QueueClient.from_connection_string(conn_str, q_name)
-    msg = "departure." + icao24 + "." + str(now)
-    queue_client.send_message(msg)
+    queue_client.send_message(str(icao24))
+    print("Departure: " + str(icao24))
 
 
 def new_arrival(icao24):
-    now = now_in_unix_time()
+    q_name = "flightarrival"
     queue_client = QueueClient.from_connection_string(conn_str, q_name)
-    msg = "arrival." + icao24 + "." + str(now)
-    queue_client.send_message(msg)
-    print(msg)
+    queue_client.send_message(str(icao24))
+    print("Arrival: " + str(icao24))
