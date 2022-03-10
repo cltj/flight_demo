@@ -1,5 +1,5 @@
 from flight_data import get_on_ground, now_in_unix_time
-#from az_queue import new_departure, new_arrival
+from az_queue import new_departure, new_arrival
 
 enroute_list = []
 
@@ -35,14 +35,14 @@ def check(icao24):
                 msg = str(icao24 + ": Plane has arrived in the last 5 minutes")
                 print(msg)
                 enroute_list.remove(icao24)
-                #new_arrival(icao24)
+                new_arrival(icao24)
                 return True
         elif d2_ground ==  'True':
             if d1_ground == 'False':
                 msg = str(icao24 + ": Plane has departed in the last 5 minues")
                 print(msg)
                 enroute_list.append(icao24)
-                #new_departure(icao24)
+                new_departure(icao24)
                 return True
         else:
             print("Error in flight status")
