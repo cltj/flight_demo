@@ -1,0 +1,56 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the dev branch
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+          
+      - name: Microsoft Teams (Generic)
+        # You may pin to the exact commit or the version.
+        # uses: aliencube/microsoft-teams-actions@dd5e839bd9f0a79a162d8b6a79065ff525be44b9
+        uses: aliencube/microsoft-teams-actions@v0.8.0
+        with:
+          # Incoming webhook URI to Microsoft Teams
+          webhook_uri: 'https://cloudlinkai.webhook.office.com/webhookb2/02b88db9-7ef2-4440-8e32-7f750176d760@a1c9b4ca-0d50-424b-9490-52369dcd4482/IncomingWebhook/851cfc5e0f9442d390843694cc14d730/cba392c7-5d19-4301-b2ac-55ab2f039d97'
+          # Message title
+          title: "new code merged with dev"
+          # Message summary
+          summary: optional, default is 
+          # Message text
+          text: optional, default is 
+          # Message theme color
+          theme_color: optional, default is 
+          # JSON array for message sections
+          sections: optional, default is 
+          # JSON array for message actions
+          actions: optional, default is 
