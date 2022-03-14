@@ -38,7 +38,7 @@ def check(icao24):
             if d2_ground == 'False':
                 msg = str(icao24 + ": Plane has arrived in the last 5 minutes")
                 print(msg)
-                enroute_list.remove(icao24)
+                #enroute_list.remove(icao24)# throws: Exception has occurred: ValueError \n list.remove(x): x not in list
                 new_arrival(icao24)
                 return True
         elif d2_ground ==  'True':
@@ -57,3 +57,22 @@ def check(icao24):
 
 def trip_tracker():
     return enroute_list
+
+def always_enroute():
+    unix_timestamp = 1647257861
+    icao24 = "3c65da"
+    data_1 = get_on_ground(icao24, unix_timestamp)
+    data_2 = get_on_ground(icao24, unix_timestamp- int(300)) # Sjekker for 5 min siden
+    if data_1 and data_2 is not None:
+        d1_ground = data_1['on_ground']
+        d2_ground = data_2['on_ground']
+        if d2_ground ==  'True':
+            if d1_ground == 'False':
+                msg = str(icao24 + ": Plane has departed in the last 5 minues")
+                print(msg)
+                enroute_list.append(icao24)
+                #new_departure(icao24)
+                return True
+        else:
+            print("Error")
+
