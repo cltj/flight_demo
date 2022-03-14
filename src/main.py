@@ -35,7 +35,7 @@ def main():
 """
 
 if __name__ == "__main__":
-    schedule.every(60).seconds.do(main)
+    schedule.every(5).seconds.do(main)
     while True:
         schedule.run_pending()
         time.sleep(1)

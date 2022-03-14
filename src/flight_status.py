@@ -20,6 +20,10 @@ def flight_status(icao24):
 
 
 def check(icao24):
+    """
+    Checks if flight has arrived/departed by checking on-ground status now and 5 minutes ago
+    Removes flight from enroute_list in case arrival, adds flight in case departure
+    """
     unix_timestamp = now_in_unix_time()
     data_1 = get_on_ground(icao24, unix_timestamp)
     data_2 = get_on_ground(icao24, unix_timestamp- int(300)) # Sjekker for 5 min siden

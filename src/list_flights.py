@@ -3,6 +3,10 @@ from airport_area import get_airport_area
 
 
 def list_flights(airport_id, tag):
+    """
+    Calls API to get info on all flights witih a airport-centered bounding box.
+    Returns list containing all flights in bounding box.
+    """
     lamin, lomin, lamax, lomax = get_airport_area(airport_id,tag)
     baseUrl = "https://opensky-network.org/api/states/all?"
     bbox = u"lamin={}&lomin={}&lamax={}&lomax={}".format(lamin,lomin,lamax,lomax)

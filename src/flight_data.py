@@ -10,6 +10,10 @@ def now_in_unix_time():
 
 
 def single_flight_data(icao24, unix_timestamp):
+    """
+    Calls API to get info on single icao24-identified flight
+    Returns dict.
+    """
     url = "https://opensky-network.org/api/states/all?time="+ str(unix_timestamp) + "&icao24=" + icao24
     payload={}
     headers = {
@@ -33,6 +37,10 @@ def single_flight_data(icao24, unix_timestamp):
 
 
 def get_on_ground(icao24, unix_timestamp):
+    """
+    Returns on ground status for icao24-identified flight
+    Returns dict
+    """
     url = "https://opensky-network.org/api/states/all?time="+ str(unix_timestamp) + "&icao24=" + icao24
     payload={}
     headers = {
@@ -77,3 +85,5 @@ def none_flight_values(icao24, unix_timestamp):
     flight_data_dict['longitude'] = float(0.0)
     flight_data_dict['latitude'] = float(0.0)
     return flight_data_dict
+
+single_flight_data("4784e8", now_in_unix_time())
