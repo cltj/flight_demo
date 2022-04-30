@@ -18,5 +18,5 @@ def get_airport_area(airport_id, tag):
 
 
 # test
-#x = get_airport_area("ABCDEF", "osl")
-#print(x)
+# x = get_airport_area("ABCDEF", "osl")
+# print(x)
