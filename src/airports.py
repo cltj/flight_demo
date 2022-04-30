@@ -1,16 +1,11 @@
 from az_table import entity_crud
 from config import My_Config
-import uuid
+from generate import new_guid
 
 # 1. Insert coordinates
 # 2. Make bounding box and ID
 # 3. Add to airports table
 # 4. List all airports
-
-
-def uuid_gen():
-    """Generates a UUID"""
-    return str(uuid.uuid4())
 
 
 def make_bounding_box(lat, lon):
@@ -25,7 +20,7 @@ def make_bounding_box(lat, lon):
 def add_airport(lat, lon):
     """Add airport from coordinates(lat,lon)"""
     bbox = make_bounding_box(lat, lon)
-    airport = {"PartitionKey": "Airport", "RowKey": uuid_gen(), "lamin": round(bbox[0], 4), "lomin": round(bbox[1], 4), "lamax": round(bbox[2], 4), "lomax": round(bbox[3], 4)}
+    airport = {"PartitionKey": "Airport", "RowKey": new_guid(), "lamin": round(bbox[0], 4), "lomin": round(bbox[1], 4), "lamax": round(bbox[2], 4), "lomax": round(bbox[3], 4)}
     connection_string = My_Config.conn_str()
     response = entity_crud(connection_string, table_name="airports", operation='create', entity=airport)
     if response != None:
