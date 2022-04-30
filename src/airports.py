@@ -1,4 +1,4 @@
-from az_table import entity_crud
+from az_table import entity_crud, list_entities
 from config import My_Config
 from generate import new_guid
 
@@ -32,5 +32,5 @@ def add_airport(lat, lon):
 def list_airports():
     """List all airports"""
     connection_string = My_Config.conn_str()
-    airports = entity_crud(connection_string, table_name="airports", operation='query', select="*")
+    airports = list_entities(connection_string, table_name="airports", select="*")
     return airports
