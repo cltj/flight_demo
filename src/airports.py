@@ -1,4 +1,3 @@
-from numpy import true_divide
 from az_table import entity_crud
 from config import My_Config
 import uuid
