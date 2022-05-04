@@ -59,6 +59,9 @@ def trip_tracker():
     return enroute_list
 
 def always_enroute():
+    """
+    Debug function to test tracking the enroute list
+    """
     unix_timestamp = 1647257861
     icao24 = "3c65da"
     data_1 = get_on_ground(icao24, unix_timestamp)

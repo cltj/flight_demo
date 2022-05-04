@@ -1,5 +1,6 @@
 from flight_data import single_flight_data, now_in_unix_time
-from list_flights import list_flights
+#from list_flights import list_flights
+from list_flights_at_airport import list_flights_at_airport
 from flight_status import flight_status
 from config import My_Config
 from az_table import list_entities
@@ -8,18 +9,24 @@ import schedule
 import time
 
 
-def check_status(airport_id, tag):
+""" def check_status(airport_id, tag):
     flights = list_flights(airport_id, tag)
     for flight in flights:
         print(str(len(flights)) + " fligths in list")
         flights.pop(0)
         flight_status(flight)
-
+ """
+def check_for_flights(airport):
+    flights = list_flights_at_airport(airport)
+    for flight in flights:
+        print(str(len(flights)) + " fligths in list")
+        flights.pop(0)
+        flight_status(flight)
 
 def main():
     airports = list_entities(connection_string=My_Config.conn_str(), table_name="airports", select="*")
     for airport in airports:
-        check_status(airport_id=airport['PartitionKey'],tag=airport['RowKey'])
+        check_for_flights(airport)
     print("Done!!!")
     """
     unix_timestamp = now_in_unix_time()
