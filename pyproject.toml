@@ -6,7 +6,7 @@ authors = ["cltj <tj@cloudlink.ai>", "tormodder <tofadle@protonmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "3.8"
 uvicorn = "^0.17.5"
 starlette = "0.17.1"
 fastapi = "^0.74.0"
