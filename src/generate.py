@@ -16,3 +16,5 @@ def new_guid():
     """
     new_id = str(uuid.uuid4())
     return new_id
+
+print(random_char(5))
