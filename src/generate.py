@@ -14,5 +14,5 @@ def new_guid():
     """
     returns a unique id (uuid)
     """
-    new_id = uuid.uuid4()
+    new_id = str(uuid.uuid4())
     return new_id
